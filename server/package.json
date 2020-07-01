@@ -1,0 +1,26 @@
+{
+  "name": "fullstack-apollo-express-postgresql-boilerplate",
+  "version": "1.0.0",
+  "description": "## Features of Client + Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mehmet-Ergorgec/fullstack-apollo-express-postgresql-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mehmet-Ergorgec/fullstack-apollo-express-postgresql-boilerplate/issues"
+  },
+  "homepage": "https://github.com/Mehmet-Ergorgec/fullstack-apollo-express-postgresql-boilerplate#readme",
+  "dependencies": {
+    "apollo-server": "^2.15.1",
+    "apollo-server-express": "^2.15.1",
+    "express": "^4.17.1",
+    "graphql": "^15.2.0"
+  }
+}
