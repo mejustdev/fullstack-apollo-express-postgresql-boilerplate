@@ -31,15 +31,18 @@ const schema = gql`
   }
 `;
 
+// https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments
+
 const resolvers = {
   Query: {
     users: () => {
       return Object.values(users);
     },
+    // parent, args, context, info
     user: (parent, { id }) => {
       return users[id];
     },
-    me: () => {
+    me: (parent, args, { me }) => {
       return me;
     },
   },
@@ -48,6 +51,9 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
+  context: {
+    me: users[1],
+  },
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
