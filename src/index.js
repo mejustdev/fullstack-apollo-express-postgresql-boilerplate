@@ -1,6 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server-express');
 import cors from 'cors';
 import 'dotenv/config';
+import { v4 as uuidv4 } from 'uuid';
 const express = require('express');
 
 const app = express();
@@ -44,6 +45,10 @@ const schema = gql`
     message(id: ID!): Message!
   }
 
+  type Mutation {
+    createMessage(text: String!): Message!
+  }
+
   type User {
     id: ID!
     username: String!
@@ -56,8 +61,6 @@ const schema = gql`
     user: User!
   }
 `;
-
-// https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments
 
 const resolvers = {
   Query: {
@@ -76,6 +79,20 @@ const resolvers = {
     },
     message: (parent, { id }) => {
       return messages[id];
+    },
+  },
+  Mutation: {
+    createMessage: (parent, { text }, { me }) => {
+      const id = uuidv4();
+      const message = {
+        id,
+        text,
+        userId: me.id,
+      };
+      messages[id] = message;
+      users[me.id].messageIds.push(id);
+
+      return message;
     },
   },
   User: {
