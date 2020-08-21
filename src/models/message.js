@@ -4,9 +4,11 @@ const message = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
   });
+
   Message.associate = (models) => {
     Message.belongsTo(models.User);
   };
+
   return Message;
 };
 
