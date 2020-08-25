@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import cors from 'cors';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 
 import schema from './schema';
 import resolvers from './resolvers';
-import models, { sequelize } from './models';
+import db, { sequelize } from './models';
 
 const app = express();
 
@@ -15,10 +15,19 @@ app.use(cors());
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  context: async () => ({
-    models,
-    me: await models.User.findByLogin('rwieruch'),
-  }),
+  context: async ({ req, connection }) => {
+    if (connection) {
+      return { db };
+    }
+    if (req) {
+      const me = await getMe(req);
+      return {
+        db,
+        me,
+        secret: process.env.SECRET,
+      };
+    }
+  },
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
@@ -36,7 +45,7 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
 });
 
 const createUsersWithMessages = async () => {
-  await models.User.create(
+  await db.user.create(
     {
       username: 'Mehmet E.',
       messages: [
@@ -46,11 +55,11 @@ const createUsersWithMessages = async () => {
       ],
     },
     {
-      include: [models.Message],
+      include: [db.message],
     },
   );
 
-  await models.User.create(
+  await db.user.create(
     {
       username: 'ddavids',
       messages: [
@@ -63,7 +72,7 @@ const createUsersWithMessages = async () => {
       ],
     },
     {
-      include: [models.Message],
+      include: [db.message],
     },
   );
 };
