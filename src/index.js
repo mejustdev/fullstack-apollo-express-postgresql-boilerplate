@@ -20,7 +20,7 @@ const server = new ApolloServer({
       return { db };
     }
     if (req) {
-      const me = await getMe(req);
+      const me = await db.user.findByLogin('Mehmet E.');
       return {
         db,
         me,

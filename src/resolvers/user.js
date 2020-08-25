@@ -1,14 +1,14 @@
 export default {
   Query: {
-    users: async (parent, args, { models }) => {
-      return await models.User.findAll();
+    users: async (parent, args, { db }) => {
+      return await db.user.findAll();
     },
     // parent, args, context, info
-    user: async (parent, { id }, { models }) => {
-      return await models.User.findById(id);
+    user: async (parent, { id }, { db }) => {
+      return await db.user.findById(id);
     },
     me: async (parent, args, { me }) => {
-      return await models.User.findById(me.id);
+      return await db.user.findById(me.id);
     },
   },
   User: {
