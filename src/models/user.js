@@ -2,11 +2,16 @@ const user = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
     username: {
       type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
   });
 
-  User.associate = (models) => {
-    User.hasMany(models.message, { onDelete: 'CASCADE' });
+  User.associate = (db) => {
+    User.hasMany(db.message, { onDelete: 'CASCADE' });
   };
 
   User.findByLogin = async (login) => {
