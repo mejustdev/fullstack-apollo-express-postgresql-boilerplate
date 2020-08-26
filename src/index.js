@@ -59,6 +59,8 @@ const createUsersWithMessages = async () => {
   await db.user.create(
     {
       username: 'Mehmet E.',
+      email: 'hello@me.com',
+      password: '1234567',
       messages: [
         {
           text: 'Published the Road to learn React',
@@ -73,6 +75,8 @@ const createUsersWithMessages = async () => {
   await db.user.create(
     {
       username: 'ddavids',
+      email: 'hello@you.com',
+      password: '1234567',
       messages: [
         {
           text: 'Happy to release ...',
