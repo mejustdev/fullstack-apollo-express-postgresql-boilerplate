@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { AuthenticationError, UserInputError } from 'apollo-server';
+import { isAdmin } from './authorization';
 
 const createToken = async (user, secret, expiresIn) => {
-  const { id, email, username } = user;
-  return await jwt.sign({ id, email, username }, secret, {
+  const { id, email, username, role } = user;
+  return await jwt.sign({ id, email, username, role }, secret, {
     expiresIn,
   });
 };
@@ -30,6 +31,7 @@ export default {
       });
       return { token: createToken(user, secret, '30m') };
     },
+
     signIn: async (parent, { login, password }, { db, secret }) => {
       const user = await db.user.findByLogin(login);
       if (!user) {
@@ -41,7 +43,14 @@ export default {
       }
       return { token: createToken(user, secret, '30m') };
     },
+
+    deleteUser: combineResolvers(isAdmin, async (parent, { id }, { db }) => {
+      return await db.user.destroy({
+        where: { id },
+      });
+    }),
   },
+
   User: {
     messages: async (user, args, { db }) => {
       return await db.message.findAll({
