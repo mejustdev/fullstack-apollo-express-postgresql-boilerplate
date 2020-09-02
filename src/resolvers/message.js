@@ -1,3 +1,7 @@
+import { ForbiddenError } from 'apollo-server';
+import { combineResolvers } from 'graphql-resolvers';
+import { isAuthenticated, isMessageOwner } from './authorization';
+
 export default {
   Query: {
     messages: async (parent, args, { db }) => {
@@ -9,22 +13,23 @@ export default {
   },
 
   Mutation: {
-    createMessage: async (parent, { text }, { me, db }) => {
-      try {
-        return await db.message.create({
-          text,
-          userId: me.id,
-        });
-      } catch (error) {
-        throw new Error(error);
+    createMessage: combineResolvers(isAuthenticated, async (parent, { text }, { me, db }) => {
+      if (!me) {
+        throw new ForbiddenError('Not authenticated as user.');
       }
-    },
-
-    deleteMessage: async (parent, { id }, { db }) => {
-      return await db.message.destroy({ where: { id } });
-    },
+      return await db.message.create({
+        text,
+        userId: me.id,
+      });
+    }),
+    deleteMessage: combineResolvers(
+      isAuthenticated,
+      isMessageOwner,
+      async (parent, { id }, { db }) => {
+        return await db.message.destroy({ where: { id } });
+      },
+    ),
   },
-
   Message: {
     user: async (message, args, { db }) => {
       return await db.user.findById(message.userId);
