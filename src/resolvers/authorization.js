@@ -1,5 +1,5 @@
 import { ForbiddenError } from 'apollo-server';
-import { skip } from 'graphql-resolvers';
+import { combineResolvers, skip } from 'graphql-resolvers';
 
 //GraphQL Authorization on a Resolver Level
 export const isAuthenticated = (parent, args, { me }) =>

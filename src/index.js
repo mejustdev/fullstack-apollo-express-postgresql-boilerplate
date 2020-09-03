@@ -3,6 +3,7 @@ import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 import express from 'express';
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
+import jwt from 'jsonwebtoken';
 
 import schema from './schema';
 import resolvers from './resolvers';

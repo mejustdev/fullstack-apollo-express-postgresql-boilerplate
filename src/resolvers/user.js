@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { AuthenticationError, UserInputError } from 'apollo-server';
+import { combineResolvers } from 'graphql-resolvers';
 import { isAdmin } from './authorization';
 
 const createToken = async (user, secret, expiresIn) => {
@@ -18,7 +19,10 @@ export default {
     user: async (parent, { id }, { db }) => {
       return await db.user.findById(id);
     },
-    me: async (parent, args, { me }) => {
+    me: async (parent, args, { db, me }) => {
+      if (!me) {
+        return null;
+      }
       return await db.user.findById(me.id);
     },
   },
