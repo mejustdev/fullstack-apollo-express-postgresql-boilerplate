@@ -17,13 +17,13 @@ export default {
     },
     // parent, args, context, info
     user: async (parent, { id }, { db }) => {
-      return await db.user.findById(id);
+      return await db.user.findByPk(id);
     },
     me: async (parent, args, { db, me }) => {
       if (!me) {
         return null;
       }
-      return await db.user.findById(me.id);
+      return await db.user.findByPk(me.id);
     },
   },
   Mutation: {

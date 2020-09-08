@@ -8,7 +8,7 @@ export default {
       return await db.message.findAll();
     },
     message: async (parent, { id }, { db }) => {
-      return await db.message.findById(id);
+      return await db.message.findByPk(id);
     },
   },
 
@@ -32,7 +32,7 @@ export default {
   },
   Message: {
     user: async (message, args, { db }) => {
-      return await db.user.findById(message.userId);
+      return await db.user.findByPk(message.userId);
     },
   },
 };
