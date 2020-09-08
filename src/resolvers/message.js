@@ -1,11 +1,25 @@
+import Sequelize from 'sequelize';
 import { ForbiddenError } from 'apollo-server';
 import { combineResolvers } from 'graphql-resolvers';
 import { isAuthenticated, isMessageOwner } from './authorization';
 
 export default {
   Query: {
-    messages: async (parent, args, { db }) => {
-      return await db.message.findAll();
+    messages: async (parent, { cursor, limit = 100 }, { db }) => {
+      const cursorOptions = cursor
+        ? {
+            where: {
+              createdAt: {
+                [Sequelize.Op.lt]: cursor,
+              },
+            },
+          }
+        : {};
+      return await db.message.findAll({
+        order: [['createdAt', 'DESC']],
+        limit,
+        ...cursorOptions,
+      });
     },
     message: async (parent, { id }, { db }) => {
       return await db.message.findByPk(id);
